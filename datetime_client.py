@@ -3,6 +3,7 @@ LangChain/LangGraph Client for DateTime MCP Server
 
 This script demonstrates how to connect to the DateTime MCP server
 using langchain-mcp-adapters and create an agent with LangGraph.
+Uses OpenAI's oss-20b model.
 """
 
 import asyncio
@@ -12,7 +13,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langgraph.prebuilt import create_react_agent
-from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 
 # Load environment variables from .env file
 load_dotenv()
@@ -49,8 +50,9 @@ async def main():
             print(f"  - {tool.name}: {tool.description[:80]}...")
         print()
         
-        # Create the LLM (requires ANTHROPIC_API_KEY environment variable)
-        llm = ChatAnthropic(model="claude-sonnet-4-5-20250929")
+        # Create the LLM using OpenAI's oss-20b model
+        # Requires OPENAI_API_KEY environment variable
+        llm = ChatOpenAI(model="openai/oss-20b")
         
         # Create a ReAct agent with the MCP tools
         agent = create_react_agent(llm, tools)
@@ -103,10 +105,10 @@ def print_response(response):
 
 if __name__ == "__main__":
     # Check for API key
-    if not os.getenv("ANTHROPIC_API_KEY"):
-        print("Warning: ANTHROPIC_API_KEY environment variable not set.")
+    if not os.getenv("OPENAI_API_KEY"):
+        print("Warning: OPENAI_API_KEY environment variable not set.")
         print("Please set it in a .env file or export it:")
-        print("  export ANTHROPIC_API_KEY='your-api-key'")
+        print("  export OPENAI_API_KEY='your-api-key'")
         print()
     
     # Run the async main function
